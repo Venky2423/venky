@@ -1,3 +1,4 @@
+
 import {
   createButton, createFieldWrapper, createLabel, getHTMLRenderType,
   createHelpText,
@@ -24,22 +25,27 @@ const withFieldWrapper = (element) => (fd) => {
 function setPlaceholder(element, fd) {
   if (fd.placeHolder) {
     element.setAttribute('placeholder', fd.placeHolder);
+
   }
 }
 
 const constraintsDef = Object.entries({
+
   'password|tel|email|text': [['maxLength', 'maxlength'], ['minLength', 'minlength'], 'pattern'],
   'number|range|date': [['maximum', 'Max'], ['minimum', 'Min'], 'step'],
   file: ['accept', 'Multiple'],
   fieldset: [['maxOccur', 'data-max'], ['minOccur', 'data-min']],
+
 }).flatMap(([types, constraintDef]) => types.split('|')
   .map((type) => [type, constraintDef.map((cd) => (Array.isArray(cd) ? cd : [cd, cd]))]));
 
 const constraintsObject = Object.fromEntries(constraintsDef);
 
 function setConstraints(element, fd) {
+
   const renderType = getHTMLRenderType(fd);
   const constraints = constraintsObject[renderType];
+
   if (constraints) {
     constraints
       .filter(([nm]) => fd[nm])
@@ -49,13 +55,16 @@ function setConstraints(element, fd) {
   }
 }
 
+
 function createInput(fd) {
   const input = document.createElement('input');
   input.type = getHTMLRenderType(fd);
+
   setPlaceholder(input, fd);
   setConstraints(input, fd);
   return input;
 }
+
 
 const createTextArea = withFieldWrapper((fd) => {
   const input = document.createElement('textarea');
@@ -65,6 +74,7 @@ const createTextArea = withFieldWrapper((fd) => {
 
 const createSelect = withFieldWrapper((fd) => {
   const select = document.createElement('select');
+
   select.required = fd.required;
   select.title = fd.tooltip ?? '';
   select.readOnly = fd.readOnly;
@@ -79,17 +89,21 @@ const createSelect = withFieldWrapper((fd) => {
   }
   let optionSelected = false;
 
+
   const addOption = (label, value) => {
     const option = document.createElement('option');
     option.textContent = label?.trim();
     option.value = value?.trim() || label?.trim();
+
     if (fd.value === option.value || (Array.isArray(fd.value) && fd.value.includes(option.value))) {
       option.setAttribute('selected', '');
       optionSelected = true;
+
     }
     select.append(option);
     return option;
   };
+
 
   const options = fd?.enum || [];
   const optionNames = fd?.enumNames ?? options;
@@ -113,9 +127,11 @@ function createRadioOrCheckbox(fd) {
   return wrapper;
 }
 
+
 function createLegend(fd) {
   return createLabel(fd, 'legend');
 }
+
 
 function createFieldSet(fd) {
   const wrapper = createFieldWrapper(fd, 'fieldset', createLegend);
@@ -123,9 +139,11 @@ function createFieldSet(fd) {
   wrapper.name = fd.name;
   if (fd.fieldType === 'panel') {
     wrapper.classList.add('form-panel-wrapper');
+
   }
   return wrapper;
 }
+
 
 function setConstraintsMessage(field, messages = {}) {
   Object.keys(messages).forEach((key) => {
@@ -161,10 +179,12 @@ function createRadioOrCheckboxGroup(fd) {
   wrapper.dataset.required = fd.required;
   setConstraintsMessage(wrapper, fd.constraintMessages);
   return wrapper;
+
 }
 
 function createPlainText(fd) {
   const paragraph = document.createElement('p');
+
   if (fd.richText) {
     paragraph.innerHTML = stripTags(fd.value);
   } else {
@@ -172,9 +192,11 @@ function createPlainText(fd) {
   }
   const wrapper = createFieldWrapper(fd);
   wrapper.id = fd.id;
+
   wrapper.replaceChildren(paragraph);
   return wrapper;
 }
+
 
 function createFileField(fd) {
   const field = createFieldWrapper(fd);
@@ -290,6 +312,7 @@ async function applyLayout(panel, element) {
 function renderField(fd) {
   const fieldType = fd?.fieldType?.replace('-input', '') ?? 'text';
   const renderer = fieldRenderers[fieldType];
+
   let field;
   if (typeof renderer === 'function') {
     field = renderer(fd);
@@ -297,12 +320,15 @@ function renderField(fd) {
     field = createFieldWrapper(fd);
     field.append(createInput(fd));
   }
+
   if (fd.description) {
     field.append(createHelpText(fd));
     field.dataset.description = fd.description; // In case overriden by error message
+
   }
   return field;
 }
+
 
 export async function generateFormRendition(panel, container) {
   const { items = [] } = panel;
@@ -392,5 +418,6 @@ export default async function decorate(block) {
       data,
     }, createForm);
     container.replaceWith(form);
+
   }
 }

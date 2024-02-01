@@ -1,3 +1,4 @@
+
 import { submitSuccess, submitFailure, handleSubmit } from '../submit.js';
 import {
   createHelpText, createLabel, updateOrCreateInvalidMsg, getCheckboxGroupValue,
@@ -212,3 +213,4 @@ export default async function loadRuleEngine(formDef, htmlForm, captcha, genForm
   }, 'submitFailure');
   applyRuleEngine(htmlForm, form, captcha);
 }
+

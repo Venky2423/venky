@@ -1,3 +1,4 @@
+
 // create a string containing head tags from h1 to h5
 const headings = Array.from({ length: 5 }, (_, i) => `<h${i + 1}>`).join('');
 const allowedTags = `${headings}<a><b><p><i><em><strong><ul><li>`;
@@ -78,11 +79,13 @@ export function createFieldWrapper(fd, tagName = 'div', labelFn = createLabel) {
     const label = labelFn(fd);
     if (label) { fieldWrapper.append(label); }
   }
+
   return fieldWrapper;
 }
 
 export function createButton(fd) {
   const wrapper = createFieldWrapper(fd);
+
   if (fd.buttonType) {
     wrapper.classList.add(`form-${fd?.buttonType}-wrapper`);
   }
@@ -195,3 +198,4 @@ export function checkValidation(fieldElement) {
     updateOrCreateInvalidMsg(fieldElement, '');
   }
 }
+
